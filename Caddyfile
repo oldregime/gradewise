@@ -1,0 +1,10 @@
+# GradeWise Caddy Reverse Proxy Configuration
+
+:80 {
+    reverse_proxy backend:8000
+}
+
+# When you configure your free DuckDNS domain (e.g. gradewise-api.duckdns.org):
+# gradewise-api.duckdns.org {
+#     reverse_proxy backend:8000
+# }
