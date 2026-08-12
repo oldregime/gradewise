@@ -12,7 +12,7 @@
 
 *Automates student exam paper grading, digitizes handwritten booklets, extracts Proof of Marking (PoM) rubrics, and delivers class-wide relative grading curves & psychometric item analysis.*
 
-[Live App](https://gradewise-ai.netlify.app) • [Feature Spec: 1-Click Demo](ideation/03_FEATURE_ONE_CLICK_RECRUITER_DEMO.md) • [Architecture Spec](planning/05_ARCHITECTURE_DIAGRAM.md) • [Zero-Cost Stack Spec](planning/03_ZERO_COST_STACK.md) • [Master Prompt](MASTER_PROMPT.md)
+[Live App](https://gradewise.netlify.app/) • [Feature Spec: 1-Click Demo](ideation/03_FEATURE_ONE_CLICK_RECRUITER_DEMO.md) • [Architecture Spec](planning/05_ARCHITECTURE_DIAGRAM.md) • [Zero-Cost Stack Spec](planning/03_ZERO_COST_STACK.md) • [Master Prompt](MASTER_PROMPT.md)
 
 </div>
 
