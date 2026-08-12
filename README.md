@@ -4,15 +4,15 @@
 ### **AI-Powered Academic Paper Grading & Psychometric Analytics Platform**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Frontend](https://img.shields.io/badge/Frontend-React%20%7C%20Vite%20%7C%20TypeScript-6366f1.svg)](https://gradewise.netlify.app)
-[![Backend](https://img.shields.io/badge/Backend-FastAPI%20%7C%20PyMuPDF%20%7C%20Python-10b981.svg)](#)
+[![Production Deploy](https://img.shields.io/badge/Production-gradewise.netlify.app-10b981.svg)](https://gradewise.netlify.app)
+[![Staging Dev Branch](https://img.shields.io/badge/Staging%20Dev-dev--gradewise.netlify.app-6366f1.svg)](https://dev--gradewise.netlify.app)
 [![AI Engine](https://img.shields.io/badge/AI-Gemini%202.5%20Flash%20%7C%20Vision-f59e0b.svg)](#)
 [![Release](https://img.shields.io/badge/Release-v1.1.0%20(Recruiter%20Demo)-purple.svg)](https://github.com/oldregime/gradewise/releases)
 [![Hosting Cost](https://img.shields.io/badge/Cloud%20Cost-%240.00%2Fmo%20(Always%20Free)-emerald.svg)](#zero-cost-infrastructure-stack)
 
 *Automates student exam paper grading, digitizes handwritten booklets, extracts Proof of Marking (PoM) rubrics, and delivers class-wide relative grading curves & psychometric item analysis.*
 
-[Live Demo App](https://gradewise.netlify.app) • [Feature Spec: 1-Click Demo](ideation/03_FEATURE_ONE_CLICK_RECRUITER_DEMO.md) • [Architecture Spec](planning/05_ARCHITECTURE_DIAGRAM.md) • [Zero-Cost Stack Spec](planning/03_ZERO_COST_STACK.md) • [Master Prompt](MASTER_PROMPT.md)
+[Production App](https://gradewise.netlify.app) • [Dev Staging App](https://dev--gradewise.netlify.app) • [Feature Spec: 1-Click Demo](ideation/03_FEATURE_ONE_CLICK_RECRUITER_DEMO.md) • [Architecture Spec](planning/05_ARCHITECTURE_DIAGRAM.md) • [Master Prompt](MASTER_PROMPT.md)
 
 </div>
 
