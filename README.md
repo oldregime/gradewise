@@ -4,15 +4,14 @@
 ### **AI-Powered Academic Paper Grading & Psychometric Analytics Platform**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Production Deploy](https://img.shields.io/badge/Production-gradewise.netlify.app-10b981.svg)](https://gradewise.netlify.app)
-[![Staging Dev Branch](https://img.shields.io/badge/Staging%20Dev-dev--gradewise.netlify.app-6366f1.svg)](https://dev--gradewise.netlify.app)
+[![Live App](https://img.shields.io/badge/Live%20App-gradewise--eval.netlify.app-10b981.svg)](https://gradewise-eval.netlify.app)
 [![AI Engine](https://img.shields.io/badge/AI-Gemini%202.5%20Flash%20%7C%20Vision-f59e0b.svg)](#)
 [![Release](https://img.shields.io/badge/Release-v1.1.0%20(Recruiter%20Demo)-purple.svg)](https://github.com/oldregime/gradewise/releases)
 [![Hosting Cost](https://img.shields.io/badge/Cloud%20Cost-%240.00%2Fmo%20(Always%20Free)-emerald.svg)](#zero-cost-infrastructure-stack)
 
 *Automates student exam paper grading, digitizes handwritten booklets, extracts Proof of Marking (PoM) rubrics, and delivers class-wide relative grading curves & psychometric item analysis.*
 
-[Production App](https://gradewise.netlify.app) • [Dev Staging App](https://dev--gradewise.netlify.app) • [Feature Spec: 1-Click Demo](ideation/03_FEATURE_ONE_CLICK_RECRUITER_DEMO.md) • [Architecture Spec](planning/05_ARCHITECTURE_DIAGRAM.md) • [Master Prompt](MASTER_PROMPT.md)
+[Live App](https://gradewise-eval.netlify.app) • [Feature Spec: 1-Click Demo](ideation/03_FEATURE_ONE_CLICK_RECRUITER_DEMO.md) • [Architecture Spec](planning/05_ARCHITECTURE_DIAGRAM.md) • [Master Prompt](MASTER_PROMPT.md)
 
 </div>
 

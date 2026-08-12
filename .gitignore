@@ -34,3 +34,6 @@ keys.txt
 .__smb*
 *.db
 *.db-journal
+
+# Local Netlify folder
+.netlify
