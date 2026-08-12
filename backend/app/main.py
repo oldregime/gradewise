@@ -1,4 +1,5 @@
 import os
+import json
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Optional
@@ -10,6 +11,7 @@ from app.models.schemas import (
 from app.services.pdf_service import PDFProcessor
 from app.services.gemini_service import GeminiGradingService
 from app.services.analytics_service import AnalyticsEngine
+from app.db import init_db, save_pom, get_latest_pom, save_submission, get_all_submissions
 
 app = FastAPI(
     title="GradeWise AI Engine",
@@ -26,11 +28,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# In-memory storage for demo session state
-DEMO_STORAGE = {
-    "pom_rubric": None,
-    "submissions": []
-}
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 @app.get("/")
 def read_root():
@@ -40,7 +40,6 @@ def read_root():
         "version": "1.0.0",
         "gemini_configured": bool(os.getenv("GOOGLE_GEMINI_API_KEY"))
     }
-
 
 @app.post("/api/v1/exams/demo/parse-pom", response_model=PoMExtractionResult)
 async def parse_pom_endpoint(file: UploadFile = File(...)):
@@ -60,7 +59,7 @@ async def parse_pom_endpoint(file: UploadFile = File(...)):
 
     service = GeminiGradingService()
     rubric = service.extract_pom_rubric(full_text, b64_images)
-    DEMO_STORAGE["pom_rubric"] = rubric
+    save_pom("demo_pom", rubric.course_code or "CSE2003", rubric.exam_title or "Midterm", rubric.total_marks, rubric.dict())
     return rubric
 
 
@@ -73,16 +72,16 @@ async def grade_batch_endpoint(
     Batch grades uploaded student answer scripts (PDFs/DOCX).
     Evaluates each submission against the parsed PoM rubric using Gemini Vision logic.
     """
-    if not DEMO_STORAGE["pom_rubric"]:
-        # Load default PoM rubric if none uploaded yet
-        service = GeminiGradingService(api_key=api_key)
-        DEMO_STORAGE["pom_rubric"] = service.extract_pom_rubric("")
-
+    stored_pom = get_latest_pom()
     service = GeminiGradingService(api_key=api_key)
-    rubric = DEMO_STORAGE["pom_rubric"]
-    results = []
 
-    # Sample student data presets matching test folder
+    if stored_pom:
+        rubric = PoMExtractionResult.model_validate(stored_pom)
+    else:
+        rubric = service.extract_pom_rubric("")
+        save_pom("demo_pom", rubric.course_code or "CSE2003", rubric.exam_title or "Midterm", rubric.total_marks, rubric.dict())
+
+    results = []
     sample_students = [
         ("Divyansh Joshi", "22BCE11364"),
         ("Aarav Sharma", "22BCE10452"),
@@ -102,7 +101,6 @@ async def grade_batch_endpoint(
             full_txt = f"Student handwritten response content for {filename}"
             b64_images = []
 
-        # Determine student name/reg
         if "DIVYANSH" in filename.upper() or "22BCE11364" in filename:
             name, reg = "Divyansh Joshi", "22BCE11364"
         else:
@@ -116,9 +114,9 @@ async def grade_batch_endpoint(
             pom_rubric=rubric
         )
         res.file_name = filename
+        save_submission(res.dict())
         results.append(res)
 
-    DEMO_STORAGE["submissions"] = results
     return results
 
 
@@ -130,17 +128,17 @@ def get_analytics_endpoint(
     Computes class-wide statistical analytics, bell curves, Z-scores,
     Item Difficulty (P-value), Discrimination Index (D-value), Cronbach's Alpha, and plagiarism similarity.
     """
-    submissions = DEMO_STORAGE.get("submissions", [])
-
-    # If no submissions uploaded yet, load realistic sample class dataset for showcase demo
-    if not submissions:
+    raw_subs = get_all_submissions()
+    if raw_subs:
+        submissions = [SubmissionGradingResult.model_validate(s) for s in raw_subs]
+    else:
         service = GeminiGradingService()
         rubric = service.extract_pom_rubric("")
         sample_dataset = [
             ("Divyansh Joshi", "22BCE11364", "Addressing modes displacement indirect register format pipeline speedup RAW hazard cache tags direct CLA generate propagate"),
             ("Aarav Sharma", "22BCE10452", "Addressing format 32-bit displacement pipeline hazard data dependency cache direct line tag carry lookahead"),
             ("Rohan Verma", "22BCE11089", "Instruction format addressing modes pipeline speedup S=nk/(k+n-1) hazard forwarding cache LRU CLA logic"),
-            ("Ananya Patel", "22BCE11540", "Addressing modes displacement indirect register format pipeline speedup RAW hazard cache tags direct CLA generate propagate"), # Identical phrasing (Plagiarism)
+            ("Ananya Patel", "22BCE11540", "Addressing modes displacement indirect register format pipeline speedup RAW hazard cache tags direct CLA generate propagate"),
             ("Vikramaditya Singh", "22BCE10921", "Instruction formats 3-address addressing modes basic explanation pipeline cache memory direct mapping carry adder"),
             ("Priya Nair", "22BCE10112", "Addressing displacement register instruction format pipeline speedup data hazard cache replacement carry lookahead"),
             ("Karan Malhotra", "22BCE10874", "Basic instruction formats register address hazard RAW cache direct mapping carry adder"),
@@ -150,16 +148,14 @@ def get_analytics_endpoint(
             service.grade_student_submission(name, reg, txt, [], rubric)
             for name, reg, txt in sample_dataset
         ]
-        DEMO_STORAGE["submissions"] = submissions
+        for s in submissions:
+            save_submission(s.dict())
 
     return AnalyticsEngine.calculate_class_analytics(submissions, curve_mode=curve_mode)
 
 
 @app.post("/api/v1/keys/validate")
 def validate_byok_key(provider: str = Form(...), key: str = Form(...)):
-    """
-    Pre-flight API Key validator for BYOK (Bring Your Own Key) model setup.
-    """
     if not key or len(key) < 15:
         raise HTTPException(status_code=400, detail="Invalid API key length")
     

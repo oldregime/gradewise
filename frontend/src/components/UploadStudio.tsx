@@ -3,8 +3,8 @@ import { UploadCloud, FileText, CheckCircle, Sparkles, ArrowRight, BookOpen, Fil
 import type { PoMExtractionResult } from '../types';
 
 interface UploadStudioProps {
-  onParsePoM: () => void;
-  onGradeBatch: () => void;
+  onParsePoM: (file?: File) => void;
+  onGradeBatch: (files?: FileList | File[]) => void;
   pomParsed: boolean;
   pomData: PoMExtractionResult | null;
   isProcessing: boolean;
@@ -17,9 +17,20 @@ export const UploadStudio: React.FC<UploadStudioProps> = ({
   pomData,
   isProcessing,
 }) => {
-  const [selectedPomFile, setSelectedPomFile] = useState<string>(
-    'C11+C12+C13_CSE2003_Computer Architecture and Organization_100118_Dr Anand Motwani_Interim Semester 2024-2025_Midterm_PoM - Student Copy.pdf'
-  );
+  const [pomFile, setPomFile] = useState<File | null>(null);
+  const [studentFiles, setStudentFiles] = useState<File[]>([]);
+
+  const handlePomFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setPomFile(e.target.files[0]);
+    }
+  };
+
+  const handleStudentFilesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setStudentFiles(Array.from(e.target.files));
+    }
+  };
 
   const sampleStudentPapers = [
     { name: 'DIVYANSH JOSHI 22BCE11364 CSE2003.pdf', pages: 11, size: '1.9 MB' },
@@ -63,8 +74,10 @@ export const UploadStudio: React.FC<UploadStudioProps> = ({
             </div>
           </div>
 
-          <div
+          <label
+            htmlFor="pom-file-input"
             style={{
+              display: 'block',
               border: '2px dashed rgba(99, 102, 241, 0.4)',
               borderRadius: '12px',
               padding: '30px',
@@ -74,18 +87,25 @@ export const UploadStudio: React.FC<UploadStudioProps> = ({
               cursor: 'pointer'
             }}
           >
+            <input
+              id="pom-file-input"
+              type="file"
+              accept=".pdf,.docx"
+              onChange={handlePomFileSelect}
+              style={{ display: 'none' }}
+            />
             <UploadCloud size={40} color="#818cf8" style={{ marginBottom: '10px' }} />
             <h4 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '4px' }}>
-              {selectedPomFile ? selectedPomFile : 'Click or Drag Proof of Marking PDF'}
+              {pomFile ? pomFile.name : 'Click to Pick or Drag Proof of Marking PDF'}
             </h4>
             <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
               Supports PDF, DOCX (Proof of Marking / Model Answer Key)
             </span>
-          </div>
+          </label>
 
           {!pomParsed ? (
             <button
-              onClick={onParsePoM}
+              onClick={() => onParsePoM(pomFile || undefined)}
               className="btn-primary"
               disabled={isProcessing}
               style={{ width: '100%', padding: '12px' }}
@@ -97,7 +117,7 @@ export const UploadStudio: React.FC<UploadStudioProps> = ({
             <div>
               <div className="badge badge-emerald" style={{ width: '100%', padding: '10px', borderRadius: '8px', marginBottom: '16px' }}>
                 <CheckCircle size={16} />
-                <span>Rubric Extracted: 4 Questions (50.0 Total Marks)</span>
+                <span>Rubric Extracted: {pomData?.questions.length || 4} Questions ({pomData?.total_marks || 50.0} Total Marks)</span>
               </div>
 
               {pomData && (
@@ -131,12 +151,37 @@ export const UploadStudio: React.FC<UploadStudioProps> = ({
             </div>
           </div>
 
-          <div style={{ background: '#0f172a', borderRadius: '12px', padding: '16px', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '20px' }}>
+          <label
+            htmlFor="student-files-input"
+            style={{
+              display: 'block',
+              background: '#0f172a',
+              borderRadius: '12px',
+              padding: '16px',
+              border: '1px dashed rgba(16, 185, 129, 0.4)',
+              marginBottom: '20px',
+              cursor: 'pointer'
+            }}
+          >
+            <input
+              id="student-files-input"
+              type="file"
+              multiple
+              accept=".pdf"
+              onChange={handleStudentFilesSelect}
+              style={{ display: 'none' }}
+            />
             <h5 style={{ fontSize: '0.85rem', fontWeight: 600, color: '#94a3b8', marginBottom: '10px' }}>
-              Detected Test Batch ({sampleStudentPapers.length} Submissions):
+              {studentFiles.length > 0
+                ? `Selected ${studentFiles.length} Upload Files:`
+                : `Sample Test Batch (${sampleStudentPapers.length} Submissions — click to change):`}
             </h5>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {sampleStudentPapers.map((paper, idx) => (
+              {(studentFiles.length > 0
+                ? studentFiles.map((f) => ({ name: f.name, pages: 'PDF', size: `${(f.size / 1024 / 1024).toFixed(1)} MB` }))
+                : sampleStudentPapers
+              ).map((paper, idx) => (
                 <div
                   key={idx}
                   style={{
@@ -153,14 +198,14 @@ export const UploadStudio: React.FC<UploadStudioProps> = ({
                     <FileText size={16} color="#10b981" />
                     <span style={{ fontWeight: 600 }}>{paper.name}</span>
                   </div>
-                  <span style={{ color: '#64748b' }}>{paper.pages} pgs ({paper.size})</span>
+                  <span style={{ color: '#64748b' }}>{paper.pages} ({paper.size})</span>
                 </div>
               ))}
             </div>
-          </div>
+          </label>
 
           <button
-            onClick={onGradeBatch}
+            onClick={() => onGradeBatch(studentFiles.length > 0 ? studentFiles : undefined)}
             className="btn-primary"
             disabled={isProcessing}
             style={{

@@ -25,7 +25,6 @@ export function App() {
   const [analytics, setAnalytics] = useState<ClassAnalyticsResult | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Fetch initial analytics demo data on mount
   useEffect(() => {
     fetchAnalytics('absolute');
   }, []);
@@ -38,15 +37,19 @@ export function App() {
         setAnalytics(data);
       }
     } catch (e) {
-      console.warn('Backend not running locally yet, using fallback state.');
+      console.warn('Backend server not connected locally.');
     }
   };
 
-  const handleParsePoM = async () => {
+  const handleParsePoM = async (file?: File) => {
     setIsProcessing(true);
     try {
       const formData = new FormData();
-      formData.append('file', new File(['demo'], 'pom.pdf', { type: 'application/pdf' }));
+      if (file) {
+        formData.append('file', file);
+      } else {
+        formData.append('file', new File(['demo'], 'pom.pdf', { type: 'application/pdf' }));
+      }
 
       const res = await fetch(`${API_BASE_URL}/api/v1/exams/demo/parse-pom`, {
         method: 'POST',
@@ -58,10 +61,10 @@ export function App() {
         setPomData(data);
         setPomParsed(true);
       } else {
-        throw new Error('Fallback');
+        throw new Error('Parse PoM API call failed');
       }
     } catch (e) {
-      // Fallback state if backend endpoint not active
+      // Fallback state if offline
       setPomParsed(true);
       setPomData({
         exam_title: 'Computer Architecture and Organization — TEE/Midterm',
@@ -87,11 +90,16 @@ export function App() {
     }
   };
 
-  const handleGradeBatch = async () => {
+  const handleGradeBatch = async (files?: FileList | File[]) => {
     setIsProcessing(true);
     try {
       const formData = new FormData();
-      formData.append('files', new File(['demo'], 'DIVYANSH JOSHI 22BCE11364 CSE2003.pdf', { type: 'application/pdf' }));
+      if (files && files.length > 0) {
+        Array.from(files).forEach((f) => formData.append('files', f));
+      } else {
+        formData.append('files', new File(['demo'], 'DIVYANSH JOSHI 22BCE11364 CSE2003.pdf', { type: 'application/pdf' }));
+      }
+
       if (byokKey) {
         formData.append('api_key', byokKey);
       }
@@ -105,10 +113,10 @@ export function App() {
         const data = await res.json();
         setSubmissions(data);
       } else {
-        throw new Error('Fallback');
+        throw new Error('Grade Batch API call failed');
       }
     } catch (e) {
-      // Fallback state for local offline demo test data
+      // Fallback offline state
       const sampleResults: SubmissionGradingResult[] = [
         {
           submission_id: 'sub_22BCE11364',
@@ -157,38 +165,6 @@ export function App() {
           overall_confidence: 0.94,
           processing_time_seconds: 1.8,
           file_name: 'DIVYANSH JOSHI 22BCE11364 CSE2003.pdf'
-        },
-        {
-          submission_id: 'sub_22BCE10452',
-          student_name: 'Aarav Sharma',
-          student_register_number: '22BCE10452',
-          exam_id: 'demo_exam',
-          question_results: [
-            {
-              question_number: 'Q1(a)',
-              max_marks: 10,
-              total_awarded_marks: 7.5,
-              transcription: 'Instruction format overview and displacement addressing.',
-              rubric_evaluations: [
-                { criterion_id: 'c1_1', criterion_name: 'Instruction format definition', allocated_marks: 4, awarded_marks: 3, quoted_evidence: 'Basic definition provided.', status: 'PARTIAL' },
-                { criterion_id: 'c1_2', criterion_name: 'Addressing modes syntax', allocated_marks: 4, awarded_marks: 3, quoted_evidence: 'Displacement mode mentioned.', status: 'PARTIAL' },
-                { criterion_id: 'c1_3', criterion_name: 'Clarity', allocated_marks: 2, awarded_marks: 1.5, quoted_evidence: 'Clear writing.', status: 'PARTIAL' }
-              ],
-              overall_feedback: 'Satisfactory overview, needs more technical depth in instruction syntax.',
-              confidence_score: 0.88,
-              flagged_for_human_review: false,
-              page_numbers: [1],
-              bounding_box: { x: 35, y: 120, width: 530, height: 230 }
-            }
-          ],
-          total_raw_score: 38.0,
-          max_possible_score: 50,
-          percentage: 76.0,
-          letter_grade: 'B',
-          z_score: 0.35,
-          overall_confidence: 0.88,
-          processing_time_seconds: 1.5,
-          file_name: 'Aarav_Sharma_22BCE10452.pdf'
         }
       ];
       setSubmissions(sampleResults);
