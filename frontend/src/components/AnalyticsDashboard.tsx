@@ -7,7 +7,9 @@ import {
   Sliders,
   CheckCircle,
   HelpCircle,
-  Award
+  Award,
+  Printer,
+  Sparkles
 } from 'lucide-react';
 import type { ClassAnalyticsResult } from '../types';
 
@@ -21,6 +23,8 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
   onRefreshAnalytics,
 }) => {
   const [curveMode, setCurveMode] = useState<'absolute' | 'gaussian'>('absolute');
+  const [targetMean, setTargetMean] = useState<number>(72);
+  const [targetSD, setTargetSD] = useState<number>(14);
 
   const handleCurveModeChange = (mode: 'absolute' | 'gaussian') => {
     setCurveMode(mode);
@@ -40,6 +44,10 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handlePrintReport = () => {
+    window.print();
   };
 
   if (!analytics) {
@@ -103,6 +111,11 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
             </button>
           </div>
 
+          <button className="btn-secondary" onClick={handlePrintReport}>
+            <Printer size={16} />
+            <span>Print Report</span>
+          </button>
+
           <button className="btn-primary" onClick={handleExportCSV}>
             <Download size={16} />
             <span>Export CSV</span>
@@ -152,6 +165,50 @@ export const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
           <span style={{ fontSize: '0.7rem', color: '#64748b' }}>Pairwise Similarity ≥ 40%</span>
         </div>
       </div>
+
+      {/* Interactive Bell Curve Adjustment Controls (if Gaussian mode enabled) */}
+      {curveMode === 'gaussian' && (
+        <div className="glass-panel" style={{ padding: '20px', borderRadius: '12px', marginBottom: '24px', border: '1px solid rgba(99, 102, 241, 0.4)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+            <Sliders size={18} color="#818cf8" />
+            <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#ffffff' }}>
+              Interactive Bell Curve Calibration Sliders
+            </h4>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <div>
+              <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'flex', justifyContent: 'space-between' }}>
+                <span>Target Mean (μ): <b>{targetMean}%</b></span>
+                <span style={{ color: '#94a3b8' }}>Shift distribution center</span>
+              </label>
+              <input
+                type="range"
+                min={50}
+                max={90}
+                value={targetMean}
+                onChange={(e) => setTargetMean(Number(e.target.value))}
+                style={{ width: '100%', marginTop: '6px', cursor: 'pointer' }}
+              />
+            </div>
+
+            <div>
+              <label style={{ fontSize: '0.8rem', color: '#cbd5e1', display: 'flex', justifyContent: 'space-between' }}>
+                <span>Target Std Dev (σ): <b>{targetSD}</b></span>
+                <span style={{ color: '#94a3b8' }}>Adjust curve spread</span>
+              </label>
+              <input
+                type="range"
+                min={5}
+                max={25}
+                value={targetSD}
+                onChange={(e) => setTargetSD(Number(e.target.value))}
+                style={{ width: '100%', marginTop: '6px', cursor: 'pointer' }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Grid: Grade Distribution Chart & Plagiarism Heatmap */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: '24px' }}>
