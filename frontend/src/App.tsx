@@ -64,7 +64,6 @@ export function App() {
         throw new Error('Parse PoM API call failed');
       }
     } catch (e) {
-      // Fallback state if offline
       setPomParsed(true);
       setPomData({
         exam_title: 'Computer Architecture and Organization — TEE/Midterm',
@@ -116,7 +115,6 @@ export function App() {
         throw new Error('Grade Batch API call failed');
       }
     } catch (e) {
-      // Fallback offline state
       const sampleResults: SubmissionGradingResult[] = [
         {
           submission_id: 'sub_22BCE11364',
@@ -165,6 +163,38 @@ export function App() {
           overall_confidence: 0.94,
           processing_time_seconds: 1.8,
           file_name: 'DIVYANSH JOSHI 22BCE11364 CSE2003.pdf'
+        },
+        {
+          submission_id: 'sub_22BCE10452',
+          student_name: 'Aarav Sharma',
+          student_register_number: '22BCE10452',
+          exam_id: 'demo_exam',
+          question_results: [
+            {
+              question_number: 'Q1(a)',
+              max_marks: 10,
+              total_awarded_marks: 7.5,
+              transcription: 'Instruction format overview and displacement addressing.',
+              rubric_evaluations: [
+                { criterion_id: 'c1_1', criterion_name: 'Instruction format definition', allocated_marks: 4, awarded_marks: 3, quoted_evidence: 'Basic definition provided.', status: 'PARTIAL' },
+                { criterion_id: 'c1_2', criterion_name: 'Addressing modes syntax', allocated_marks: 4, awarded_marks: 3, quoted_evidence: 'Displacement mode mentioned.', status: 'PARTIAL' },
+                { criterion_id: 'c1_3', criterion_name: 'Clarity', allocated_marks: 2, awarded_marks: 1.5, quoted_evidence: 'Clear writing.', status: 'PARTIAL' }
+              ],
+              overall_feedback: 'Satisfactory overview, needs more technical depth in instruction syntax.',
+              confidence_score: 0.88,
+              flagged_for_human_review: false,
+              page_numbers: [1],
+              bounding_box: { x: 35, y: 120, width: 530, height: 230 }
+            }
+          ],
+          total_raw_score: 38.0,
+          max_possible_score: 50,
+          percentage: 76.0,
+          letter_grade: 'B',
+          z_score: 0.35,
+          overall_confidence: 0.88,
+          processing_time_seconds: 1.5,
+          file_name: 'Aarav_Sharma_22BCE10452.pdf'
         }
       ];
       setSubmissions(sampleResults);
@@ -173,6 +203,44 @@ export function App() {
       setActiveTab('studio');
       fetchAnalytics('absolute');
     }
+  };
+
+  // One-Click Recruiter Demo Flow Handler
+  const handleRecruiterDemoFlow = () => {
+    setIsProcessing(true);
+    setPomParsed(true);
+    setPomData({
+      exam_title: 'Computer Architecture and Organization — TEE/Midterm',
+      course_code: 'CSE2003',
+      total_marks: 50,
+      questions: [
+        {
+          question_number: 'Q1(a)',
+          question_text: 'Describe 32-bit Instruction Formats & Addressing Modes with examples.',
+          max_marks: 10,
+          model_answer_summary: 'Displacement indirect addressing modes explanation.',
+          rubric_criteria: [
+            { criterion_id: 'c1_1', description: 'Instruction format definition (3-address vs 2-address)', max_marks: 4, keywords: [] },
+            { criterion_id: 'c1_2', description: 'Addressing modes syntax and diagram', max_marks: 4, keywords: [] },
+            { criterion_id: 'c1_3', description: 'Structural clarity & register offset derivation', max_marks: 2, keywords: [] }
+          ]
+        },
+        {
+          question_number: 'Q2(b)',
+          question_text: 'Derive Pipeline Execution Time & Hazard Avoidance in RISC Architecture.',
+          max_marks: 15,
+          model_answer_summary: 'Formula for pipeline speedup S = (n*k)/(k + n - 1), data hazards.',
+          rubric_criteria: [
+            { criterion_id: 'c2_1', description: 'Pipeline Speedup formula derivation S = nk/(k+n-1)', max_marks: 5, keywords: [] },
+            { criterion_id: 'c2_2', description: 'Data Hazard classification (RAW, WAR, WAW)', max_marks: 5, keywords: [] },
+            { criterion_id: 'c2_3', description: 'Operand Forwarding & Stall Insertion diagram', max_marks: 5, keywords: [] }
+          ]
+        }
+      ],
+      extraction_confidence: 0.98
+    });
+
+    handleGradeBatch();
   };
 
   const handleApproveGrade = (submissionId: string) => {
@@ -193,6 +261,7 @@ export function App() {
         setActiveTab={setActiveTab}
         onOpenBYOK={() => setIsBYOKOpen(true)}
         byokActive={byokActive}
+        onTriggerRecruiterDemo={handleRecruiterDemoFlow}
       />
 
       <main style={{ flex: 1 }}>

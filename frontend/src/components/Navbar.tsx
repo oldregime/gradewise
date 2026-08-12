@@ -1,11 +1,12 @@
 import React from 'react';
-import { BookOpen, Sparkles, Key, FileCheck, BarChart3, ShieldCheck } from 'lucide-react';
+import { BookOpen, Sparkles, Key, FileCheck, BarChart3, ShieldCheck, Zap } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: 'upload' | 'studio' | 'analytics';
   setActiveTab: (tab: 'upload' | 'studio' | 'analytics') => void;
   onOpenBYOK: () => void;
   byokActive: boolean;
+  onTriggerRecruiterDemo: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -13,6 +14,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   setActiveTab,
   onOpenBYOK,
   byokActive,
+  onTriggerRecruiterDemo,
 }) => {
   return (
     <header className="glass-panel" style={{ borderRadius: 0, borderTop: 0, borderLeft: 0, borderRight: 0, padding: '12px 28px', position: 'sticky', top: 0, zIndex: 50 }}>
@@ -108,8 +110,25 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
         </nav>
 
-        {/* Right Controls: Model Status & BYOK Key */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        {/* Right Controls: Recruiter Demo Button, Model Status & BYOK Key */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          
+          {/* ⚡ 1-Click Recruiter Demo Button */}
+          <button
+            onClick={onTriggerRecruiterDemo}
+            className="btn-primary"
+            style={{
+              padding: '6px 14px',
+              fontSize: '0.82rem',
+              background: 'linear-gradient(135deg, #10b981, #6366f1)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              boxShadow: '0 0 15px rgba(16, 185, 129, 0.3)'
+            }}
+          >
+            <Zap size={14} color="#ffffff" />
+            <span>⚡ 1-Click Recruiter Demo</span>
+          </button>
+
           <div className="badge badge-emerald">
             <span className="pulse-dot" />
             <span>Gemini 2.5 Flash</span>
