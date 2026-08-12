@@ -4,7 +4,7 @@
 ### **AI-Powered Academic Paper Grading & Psychometric Analytics Platform**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Frontend](https://img.shields.io/badge/Frontend-React%20%7C%20Vite%20%7C%20TypeScript-6366f1.svg)](https://gradewise.netlify.app)
+[![Live App](https://img.shields.io/badge/Live%20App-gradewise--ai.netlify.app-10b981.svg)](https://gradewise-ai.netlify.app)
 [![Backend](https://img.shields.io/badge/Backend-FastAPI%20%7C%20PyMuPDF%20%7C%20Python-10b981.svg)](#)
 [![AI Engine](https://img.shields.io/badge/AI-Gemini%202.5%20Flash%20%7C%20Vision-f59e0b.svg)](#)
 [![Release](https://img.shields.io/badge/Release-v1.1.0%20(Recruiter%20Demo)-purple.svg)](https://github.com/oldregime/gradewise/releases)
@@ -12,7 +12,7 @@
 
 *Automates student exam paper grading, digitizes handwritten booklets, extracts Proof of Marking (PoM) rubrics, and delivers class-wide relative grading curves & psychometric item analysis.*
 
-[Live App](https://gradewise.netlify.app) • [Feature Spec: 1-Click Demo](ideation/03_FEATURE_ONE_CLICK_RECRUITER_DEMO.md) • [Architecture Spec](planning/05_ARCHITECTURE_DIAGRAM.md) • [Zero-Cost Stack Spec](planning/03_ZERO_COST_STACK.md) • [Master Prompt](MASTER_PROMPT.md)
+[Live App](https://gradewise-ai.netlify.app) • [Feature Spec: 1-Click Demo](ideation/03_FEATURE_ONE_CLICK_RECRUITER_DEMO.md) • [Architecture Spec](planning/05_ARCHITECTURE_DIAGRAM.md) • [Zero-Cost Stack Spec](planning/03_ZERO_COST_STACK.md) • [Master Prompt](MASTER_PROMPT.md)
 
 </div>
 
