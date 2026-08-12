@@ -59,7 +59,7 @@ async def parse_pom_endpoint(file: UploadFile = File(...)):
 
     service = GeminiGradingService()
     rubric = service.extract_pom_rubric(full_text, b64_images)
-    save_pom("demo_pom", rubric.course_code or "CSE2003", rubric.exam_title or "Midterm", rubric.total_marks, rubric.dict())
+    save_pom("demo_pom", rubric.course_code or "CSE2003", rubric.exam_title or "Midterm", rubric.total_marks, rubric.model_dump())
     return rubric
 
 
@@ -79,7 +79,7 @@ async def grade_batch_endpoint(
         rubric = PoMExtractionResult.model_validate(stored_pom)
     else:
         rubric = service.extract_pom_rubric("")
-        save_pom("demo_pom", rubric.course_code or "CSE2003", rubric.exam_title or "Midterm", rubric.total_marks, rubric.dict())
+        save_pom("demo_pom", rubric.course_code or "CSE2003", rubric.exam_title or "Midterm", rubric.total_marks, rubric.model_dump())
 
     results = []
     sample_students = [
@@ -114,7 +114,7 @@ async def grade_batch_endpoint(
             pom_rubric=rubric
         )
         res.file_name = filename
-        save_submission(res.dict())
+        save_submission(res.model_dump())
         results.append(res)
 
     return results

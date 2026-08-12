@@ -3,11 +3,16 @@ import json
 import os
 from typing import Dict, Any, List, Optional
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "gradewise.db")
+DB_PATH = "/tmp/gradewise.db" if os.getenv("TESTING") == "1" else os.path.join(os.path.dirname(__file__), "..", "gradewise.db")
+
+def get_connection():
+    conn = sqlite3.connect(DB_PATH, timeout=30.0)
+    conn.execute("PRAGMA journal_mode=WAL;")
+    return conn
 
 def init_db():
     """Initializes SQLite database tables for exams, rubrics, and student submissions."""
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -43,7 +48,7 @@ def init_db():
     conn.close()
 
 def save_pom(pom_id: str, course_code: str, title: str, total_marks: float, pom_dict: Dict[str, Any]):
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "INSERT OR REPLACE INTO poms (id, course_code, exam_title, total_marks, data_json) VALUES (?, ?, ?, ?, ?)",
@@ -53,7 +58,7 @@ def save_pom(pom_id: str, course_code: str, title: str, total_marks: float, pom_
     conn.close()
 
 def get_latest_pom() -> Optional[Dict[str, Any]]:
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT data_json FROM poms ORDER BY created_at DESC LIMIT 1")
     row = cursor.fetchone()
@@ -63,7 +68,7 @@ def get_latest_pom() -> Optional[Dict[str, Any]]:
     return None
 
 def save_submission(sub_dict: Dict[str, Any]):
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         "INSERT OR REPLACE INTO submissions (id, exam_id, student_name, student_reg, total_score, max_possible, percentage, letter_grade, z_score, confidence, file_name, data_json) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -86,7 +91,7 @@ def save_submission(sub_dict: Dict[str, Any]):
     conn.close()
 
 def get_all_submissions() -> List[Dict[str, Any]]:
-    conn = sqlite3.connect(DB_PATH)
+    conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("SELECT data_json FROM submissions ORDER BY created_at DESC")
     rows = cursor.fetchall()
