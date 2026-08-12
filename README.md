@@ -4,7 +4,7 @@
 ### **AI-Powered Academic Paper Grading & Psychometric Analytics Platform**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Live App](https://img.shields.io/badge/Live%20App-gradewise--ai.netlify.app-10b981.svg)](https://gradewise-ai.netlify.app)
+[![Live App](https://img.shields.io/badge/Live%20App-gradewise--ai.netlify.app-10b981.svg)](https://gradewise.netlify.app/)
 [![Backend](https://img.shields.io/badge/Backend-FastAPI%20%7C%20PyMuPDF%20%7C%20Python-10b981.svg)](#)
 [![AI Engine](https://img.shields.io/badge/AI-Gemini%202.5%20Flash%20%7C%20Vision-f59e0b.svg)](#)
 [![Release](https://img.shields.io/badge/Release-v1.1.0%20(Recruiter%20Demo)-purple.svg)](https://github.com/oldregime/gradewise/releases)
