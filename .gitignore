@@ -32,3 +32,5 @@ frontend/.env.local
 *.swp
 keys.txt
 .__smb*
+*.db
+*.db-journal
